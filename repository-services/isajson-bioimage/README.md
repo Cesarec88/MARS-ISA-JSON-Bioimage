@@ -18,3 +18,8 @@ You can run the ws bu
 
 
     poetry run python main.py # it will run the ws
+
+
+
+
+url -> http://0.0.0.0:8000/docs
