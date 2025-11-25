@@ -1,5 +1,7 @@
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import Body, FastAPI, HTTPException
+
+from models import IsaInvestigation, mock_isa_data
 
 app = FastAPI()
 
@@ -40,12 +42,18 @@ async def get_data_by_accession(accession_code: str):
             )
 
 
+default_isa = IsaInvestigation(**mock_isa_data)
+
+
 @app.post("/isa-json/")
-async def submit_isa_json(isa_json: dict):
+async def submit_isa_json(isa_model: IsaInvestigation = Body(default=default_isa)):
     """
-    Takes an accession code, queries an external service, and returns the result.
+    Transforms ISA-JSON to BioStudies JSON structureish.
     """
-    return isa_json
+    # 1. Transform to Target
+    biostudies_model = isa_model.to_biostudies()
+    # 2. Output
+    return biostudies_model.model_dump()
 
 
 if __name__ == "__main__":
